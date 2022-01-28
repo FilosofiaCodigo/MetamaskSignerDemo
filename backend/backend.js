@@ -34,16 +34,29 @@ async function initAPI() {
   })
   app.use(cors())
 
-
-  console.log(123123)
   //TODO
-  let msgParams = '{"domain":{"chainId":4,"name":"Ether Mail","verifyingContract":"0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC","version":"1"},"message":{"contents":"Hello, Bob!","attachedMoneyInEth":4.2,"from":{"name":"Cow","wallets":["0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826","0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF"]},"to":[{"name":"Bob","wallets":["0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB","0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57","0xB0B0b0b0b0b0B000000000000000000000000000"]}]},"primaryType":"Mail","types":{"EIP712Domain":[{"name":"name","type":"string"},{"name":"version","type":"string"},{"name":"chainId","type":"uint256"},{"name":"verifyingContract","type":"address"}],"Group":[{"name":"name","type":"string"},{"name":"members","type":"Person[]"}],"Mail":[{"name":"from","type":"Person"},{"name":"to","type":"Person[]"},{"name":"contents","type":"string"}],"Person":[{"name":"name","type":"string"},{"name":"wallets","type":"address[]"}]}}'
-  let result_result = "0x0a3c66d2b2af8107380a9483367fbf51435f2559aded27bee08817c4d7ec24e64d949490c70629a446cf8e441d79f468c3bdb9c7e23f3cf610f536afcefc8f251c"
   let from = '0xb6F5414bAb8d5ad8F33E37591C02f7284E974FcB'
+  let signature = "0xaa8355a4afdefeb47b5dd3182889b2c2357c6350b26177393f62e8d1ad5eb69b446d73afa55ad07e402a2046afb9bd258c4ead585c407d854bcd83da99d808a61c"
+
+  let data =
+  {
+    "message":
+    {
+      "contents":"Message!",
+      "security_hash":""
+    },
+    "primaryType":"Main",
+    "types":{
+      "Main":[{"name":"contents","type":"string"},
+      {"name":"security_hash","type":"string"}]
+    }
+  }
+
+  data["message"]["security_hash"] = "0x123123"
 
   const recovered = sigUtil.recoverTypedSignature_v4({
-    data: JSON.parse(msgParams),
-    sig: result_result,
+    data: data,
+    sig: signature,
   });
 
   if (
@@ -52,7 +65,7 @@ async function initAPI() {
     console.log('Successfully recovered signer as ' + from);
   } else {
     console.log(
-      'Failed to verify signer when comparing ' + result + ' to ' + from
+      'Failed to verify signer when comparing result to ' + from
     );
   }
 }
